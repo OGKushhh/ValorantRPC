@@ -205,8 +205,9 @@ def fetch_maps():
         buf = BytesIO()
         img.save(buf, format="JPEG", quality=85, optimize=True)
         dest_jpg = (out / f"{key}.jpg")
-        dest_jpg.write_bytes(buf.getvalue())
+        # ✅ Create parent directory before writing
         dest_jpg.parent.mkdir(parents=True, exist_ok=True)
+        dest_jpg.write_bytes(buf.getvalue())
         print(f"  ✓  {key}  (saved as jpg)")
         ok += 1
         time.sleep(0.05)
