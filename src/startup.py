@@ -124,7 +124,8 @@ class Startup:
             color_print([("Cyan", "["),("White",f"{presence_timer}"),("Cyan", f"] {Localizer.get_localized_text('prints','startup','waiting_for_presence')}")])
             presence_timer += 1
             if presence_timer >= presence_timeout:
-                self.systray.exit()
+                if hasattr(self, 'systray') and self.systray is not None:
+                    self.systray.exit()
                 os._exit(1)
             time.sleep(1)
         Startup.clear_line()
@@ -142,7 +143,8 @@ class Startup:
             color_print([("Cyan", "["),("White",f"{launch_timer}"),("Cyan", f"] {Localizer.get_localized_text('prints','startup','waiting_for_valorant')}")])
             launch_timer += 1
             if launch_timer >= launch_timeout:
-                self.systray.exit()
+                if hasattr(self, 'systray') and self.systray is not None:
+                    self.systray.exit()
                 os._exit(1)
             time.sleep(1)
         Startup.clear_line()
