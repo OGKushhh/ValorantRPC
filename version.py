@@ -11,11 +11,11 @@ VSVersionInfo(
     kids=[
         StringFileInfo([StringTable(
             u'040904B0',
-            [StringStruct(u'CompanyName', u'Colin Hartigan'),
+            [StringStruct(u'CompanyName', u'OG Kush'),
              StringStruct(u'FileDescription', u'VALORANT rich presence client'),
              StringStruct(u'FileVersion', u'3.0'),
              StringStruct(u'InternalName', u'rpcclient'),
-             StringStruct(u'LegalCopyright', u'Colin Hartigan'),
+             StringStruct(u'LegalCopyright', u'OG Kush'),
              StringStruct(u'OriginalFilename', u'valorant-rpc.exe'),
              StringStruct(u'ProductName', u'VALORANT-rpc'),
              StringStruct(u'ProductVersion', u'3.1.0')])]),
