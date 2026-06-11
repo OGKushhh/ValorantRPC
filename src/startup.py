@@ -108,12 +108,22 @@ class Startup:
         self.systray_thread.start()
 
     def setup_client(self):
-        try:
-            self.client = valclient.Client(region=Localizer.get_config_value("region",0))
-            self.client.activate()
-            self.presence.client = self.client
-        except:
-            self.check_region()
+        max_attempts = 10
+        for attempt in range(max_attempts):
+            try:
+                self.client = valclient.Client(region=Localizer.get_config_value("region", 0))
+                self.client.activate()
+                self.presence.client = self.client
+                return
+            except Exception:
+                if attempt == 0:
+                    print()
+                Startup.clear_line()
+                color_print([("Cyan", "["), ("White", f"{attempt + 1}/{max_attempts}"), ("Cyan", f"] Waiting for Valorant client...")])
+                time.sleep(3)
+
+        color_print([("Red", "Could not connect to Valorant client. Trying region autodetect...")])
+        self.check_region()
 
     def wait_for_presence(self):
         presence_timeout = Localizer.get_config_value("startup","presence_timeout")
