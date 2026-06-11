@@ -40,19 +40,37 @@ class Utilities:
         return split
 
     @staticmethod 
-    def fetch_rank_data(client,content_data):
+    def fetch_rank_data(client, content_data):
         try:
-            mmr = client.fetch_mmr()["QueueSkills"]["competitive"]["SeasonalInfoBySeasonID"][content_data["season"]["season_uuid"]]
-        except:
-            return "rank_0","Rank not found"
-        rank_data = {}
-        for tier in content_data["comp_tiers"]:
-            if tier["id"] == mmr["CompetitiveTier"]:
-                rank_data = tier
-        rank_image = f"rank_{rank_data['id']}"
-        rank_text = f"{rank_data['display_name_localized']} - {mmr['RankedRating']}{Localizer.get_localized_text('presences','leveling','ranked_rating')}" + (f" // #{mmr['LeaderboardRank']}" if mmr['LeaderboardRank'] != 0 else "") 
+            mmr_data = client.fetch_mmr()
 
-        return rank_image, rank_text
+            # Use LatestCompetitiveUpdate — always points to current season rank, no season UUID needed
+            latest = mmr_data.get("LatestCompetitiveUpdate", {})
+            comp_tier = latest.get("TierAfterUpdate", 0)
+            ranked_rating = latest.get("RankedRatingAfterUpdate", 0)
+            leaderboard_rank = latest.get("LeaderboardRank", 0)
+
+            if comp_tier == 0:
+                return "rank_0", "Rank not found"
+
+            rank_data = {}
+            for tier in content_data["comp_tiers"]:
+                if tier["id"] == comp_tier:
+                    rank_data = tier
+                    break
+
+            if not rank_data:
+                return "rank_0", "Rank not found"
+
+            rank_image = f"rank_{rank_data['id']}"
+            rank_text = f"{rank_data['display_name_localized']} - {ranked_rating}{Localizer.get_localized_text('presences','leveling','ranked_rating')}"
+            if leaderboard_rank != 0:
+                rank_text += f" // #{leaderboard_rank}"
+
+            return rank_image, rank_text
+        except Exception as e:
+            debug(f"fetch_rank_data error: {e}")
+            return "rank_0", "Rank not found"
         
     @staticmethod 
     def fetch_map_data(coregame_data,content_data):

@@ -18,6 +18,7 @@ Based on **colinhartigan/valorant-rpc v3.2.3** + **krvntzkl/valorant-rpc v3.4.2*
 - **`processes.py`**: Fixed crash when process disappears mid-iteration (`NoSuchProcess`, `AccessDenied`).
 - **`startup.py`**: Fixed crash on exit when `systray` is None.
 - **`logging.py`**: Log path now relative to working directory (avoids AppData path issues). Added noise suppression for `urllib3`/`asyncio`.
+- **`presence_utilities.py`**: Fixed outdated rank api fetch call with LatestCompetitiveUpdate directly instead of the season UUID lookup.
 
 ### New features
 - **Skirmish mode** (`skirmish`, `skirmish2v2`, `2v2`, `2v2skirmish`) — new 2v2 mode
@@ -29,7 +30,7 @@ Based on **colinhartigan/valorant-rpc v3.2.3** + **krvntzkl/valorant-rpc v3.4.2*
 
 ---
 
-## From this fork (abdo) — Missing modes & locale completions
+## From this fork (OGKushhh) — Missing modes & locale completions
 
 ### New queue IDs added (all locales)
 | Queue ID | Display Name |
@@ -48,3 +49,6 @@ All 14 locales (`ar-AE`, `de-DE`, `es-ES`, `es-MX`, `fr-FR`, `id-ID`, `it-IT`, `
 
 ### Maps
 All maps (Sunset, Abyss, Corrode, etc.) are fetched dynamically from `valorant-api.com` — no hardcoding needed.
+
+## Known Issues
+- some agents icons are missing/not updated
