@@ -151,6 +151,10 @@ Locales = {
             "agent": "العميل",
             "rank": "الرانك",
             "map": "الخريطة",
+            "in_game_details": "تفاصيل_اللعبة",
+            "score": "النقاط",
+            "kda": "K/D/A",
+            "phase": "مرحلة_الجولة",
         },
         "prints": {
             "config_modification": {
@@ -239,6 +243,13 @@ Locales = {
             "startup": {
                 "loading": "تحميل",
                 "view_github": "إنتقل إلى GitHub",
+            },
+            "round_phases": {
+                "attack": "هجوم",
+                "defense": "دفاع",
+                "buy": "مرحلة الشراء",
+                "intermission": "استراحة",
+                "in_game": "في اللعبة",
             }
         },
     },
@@ -267,6 +278,10 @@ Locales = {
             "agent": "agent",
             "rank": "rang",
             "map": "karte",
+            "in_game_details": "Details_im_Spiel",
+            "score": "Punktestand",
+            "kda": "K/D/A",
+            "phase": "Rundenphase",
         },
         "prints": {
             "config_modification": {
@@ -355,6 +370,13 @@ Locales = {
             "startup": {
                 "loading": "Lädt",
                 "view_github": "Auf GitHub ansehen",
+            },
+            "round_phases": {
+                "attack": "Angriff",
+                "defense": "Verteidigung",
+                "buy": "Kaufphase",
+                "intermission": "Pause",
+                "in_game": "Im Spiel",
             }
         },
     },
@@ -383,6 +405,10 @@ Locales = {
             "agent": "agente",
             "rank": "rango",
             "map": "mapa",
+            "in_game_details": "detalles_en_partida",
+            "score": "puntuación",
+            "kda": "K/D/A",
+            "phase": "fase_de_ronda",
         },
         "prints": {
             "config_modification": {
@@ -471,6 +497,13 @@ Locales = {
             "startup": {
                 "loading": "Cargando",
                 "view_github": "Ver en GitHub",
+            },
+            "round_phases": {
+                "attack": "Ataque",
+                "defense": "Defensa",
+                "buy": "Fase de compra",
+                "intermission": "Descanso",
+                "in_game": "En partida",
             }
         },
     },
@@ -499,6 +532,10 @@ Locales = {
             "agent": "agente",
             "rank": "rango",
             "map": "mapa",
+            "in_game_details": "detalles_en_partida",
+            "score": "puntuación",
+            "kda": "K/D/A",
+            "phase": "fase_de_ronda",
         },
         "prints": {
             "config_modification": {
@@ -588,6 +625,13 @@ Locales = {
             "startup": {
                 "loading": "Cargando",
                 "view_github": "Ver en GitHub",
+            },
+            "round_phases": {
+                "attack": "Ataque",
+                "defense": "Defensa",
+                "buy": "Fase de compra",
+                "intermission": "Descanso",
+                "in_game": "En partida",
             }
         },
     },
@@ -743,6 +787,10 @@ Locales = {
             "agent": "agen",
             "rank": "pangkat",
             "map": "peta",
+            "in_game_details": "detail_dalam_game",
+            "score": "skor",
+            "kda": "K/D/A",
+            "phase": "fase_ronde",
         },
         "prints": {
             "config_modification": {
@@ -831,6 +879,13 @@ Locales = {
             "startup": {
                 "loading": "Memuat",
                 "view_github": "Lihat di GitHub",
+            },
+            "round_phases": {
+                "attack": "Serangan",
+                "defense": "Pertahanan",
+                "buy": "Fase beli",
+                "intermission": "Jeda",
+                "in_game": "Dalam game",
             }
         },
     },
@@ -859,6 +914,10 @@ Locales = {
             "agent": "agente",
             "rank": "rank",
             "map": "mappa",
+            "in_game_details": "dettagli_in_partita",
+            "score": "punteggio",
+            "kda": "K/D/A",
+            "phase": "fase_del_round",
         },
         "prints": {
             "config_modification": {
@@ -947,6 +1006,13 @@ Locales = {
             "startup": {
                 "loading": "Caricamento",
                 "view_github": "Vedi su GitHub",
+            },
+            "round_phases": {
+                "attack": "Attacco",
+                "defense": "Difesa",
+                "buy": "Fase acquisti",
+                "intermission": "Pausa",
+                "in_game": "In partita",
             }
         },
     },
@@ -975,6 +1041,10 @@ Locales = {
             "agent": "エージェント",
             "rank": "ランク",
             "map": "マップ",
+            "in_game_details": "ゲーム内詳細",
+            "score": "スコア",
+            "kda": "K/D/A",
+            "phase": "ラウンドフェーズ",
         },
         "prints": {
             "config_modification": {
@@ -1063,6 +1133,13 @@ Locales = {
             "startup": {
                 "loading": "ロード中",
                 "view_github": "GitHubで確認",
+            },
+            "round_phases": {
+                "attack": "攻撃",
+                "defense": "防衛",
+                "buy": "購入フェーズ",
+                "intermission": "インターミッション",
+                "in_game": "ゲーム中",
             }
         },
     },
@@ -1091,6 +1168,10 @@ Locales = {
             "agent": "요원",
             "rank": "랭크",
             "map": "맵",
+            "in_game_details": "게임_내_세부정보",
+            "score": "점수",
+            "kda": "K/D/A",
+            "phase": "라운드_단계",
         },
         "prints": {
             "config_modification": {
@@ -1179,6 +1260,13 @@ Locales = {
             "startup": {
                 "loading": "로딩중",
                 "view_github": "GitHub 보기",
+            },
+            "round_phases": {
+                "attack": "공격",
+                "defense": "수비",
+                "buy": "구매 단계",
+                "intermission": "휴식",
+                "in_game": "게임 중",
             }
         },
     },
@@ -1207,6 +1295,10 @@ Locales = {
             "agent": "agente",
             "rank": "ranque",
             "map": "mapa",
+            "in_game_details": "detalhes_no_jogo",
+            "score": "placar",
+            "kda": "K/D/A",
+            "phase": "fase_da_rodada",
         },
         "prints": {
             "config_modification": {
@@ -1295,6 +1387,13 @@ Locales = {
             "startup": {
                 "loading": "Carregando",
                 "view_github": "Ver no GitHub",
+            },
+            "round_phases": {
+                "attack": "Ataque",
+                "defense": "Defesa",
+                "buy": "Fase de compra",
+                "intermission": "Intervalo",
+                "in_game": "No jogo",
             }
         },
     },
@@ -1323,6 +1422,10 @@ Locales = {
             "agent": "агент",
             "rank": "ранг",
             "map": "карта",
+            "in_game_details": "детали_в_игре",
+            "score": "счёт",
+            "kda": "K/D/A",
+            "phase": "фаза_раунда",
         },
         "prints": {
             "config_modification": {
@@ -1411,8 +1514,15 @@ Locales = {
             "startup": {
                 "loading": "Загрузка",
                 "view_github": "GitHub",
+            },
+            "round_phases": {
+                "attack": "Атака",
+                "defense": "Защита",
+                "buy": "Фаза покупки",
+                "intermission": "Перерыв",
+                "in_game": "В игре",
             }
-        }
+        },
     },
     "th-TH": {
         "author": "@Nack#2336, @TheMickeyz#3078",
@@ -1439,6 +1549,10 @@ Locales = {
             "agent": "เอเจนท์",
             "rank": "แรงก์",
             "map": "แผนที่",
+            "in_game_details": "รายละเอียดในเกม",
+            "score": "คะแนน",
+            "kda": "K/D/A",
+            "phase": "เฟสรอบ",
         },
         "prints": {
             "config_modification": {
@@ -1527,6 +1641,13 @@ Locales = {
             "startup": {
                 "loading": "กำลังโหลด",
                 "view_github": "ดูใน GitHub",
+            },
+            "round_phases": {
+                "attack": "บุก",
+                "defense": "รับ",
+                "buy": "เฟสซื้อของ",
+                "intermission": "พักครึ่ง",
+                "in_game": "ในเกม",
             }
         },
     },
@@ -1555,6 +1676,10 @@ Locales = {
             "agent": "ajan",
             "rank": "rank",
             "map": "harita",
+            "in_game_details": "oyun_içi_ayrıntılar",
+            "score": "skor",
+            "kda": "K/D/A",
+            "phase": "tur_aşaması",
         },
         "prints": {
             "config_modification": {
@@ -1643,6 +1768,13 @@ Locales = {
             "startup": {
                 "loading": "Yükleniyor...",
                 "view_github": "GitHub'da bak.",
+            },
+            "round_phases": {
+                "attack": "Saldırı",
+                "defense": "Savunma",
+                "buy": "Satın alma aşaması",
+                "intermission": "Ara",
+                "in_game": "Oyunda",
             }
         },
     },
@@ -1671,6 +1803,10 @@ Locales = {
             "agent": "đặc_vụ",
             "rank": "rank",
             "map": "bản_đồ",
+            "in_game_details": "chi_tiết_trong_game",
+            "score": "điểm số",
+            "kda": "K/D/A",
+            "phase": "giai_đoạn_hiệp",
         },
         "prints": {
             "config_modification": {
@@ -1759,6 +1895,13 @@ Locales = {
             "startup": {
                 "loading": "Đang tải",
                 "view_github": "Xem trên GitHub",
+            },
+            "round_phases": {
+                "attack": "Tấn công",
+                "defense": "Phòng thủ",
+                "buy": "Giai đoạn mua",
+                "intermission": "Nghỉ giữa hiệp",
+                "in_game": "Trong game",
             }
         },
     },
@@ -1787,6 +1930,10 @@ Locales = {
             "agent": "agent",
             "rank": "ranga",
             "map": "mapa",
+            "in_game_details": "szczegóły_w_grze",
+            "score": "wynik",
+            "kda": "K/D/A",
+            "phase": "faza_rundy",
         },
         "prints": {
             "config_modification": {
@@ -1875,6 +2022,13 @@ Locales = {
             "startup": {
                 "loading": "Ładowanie",
                 "view_github": "Sprawdź na GitHub",
+            },
+            "round_phases": {
+                "attack": "Atak",
+                "defense": "Obrona",
+                "buy": "Faza zakupów",
+                "intermission": "Przerwa",
+                "in_game": "W grze",
             }
         },
     },
@@ -2030,6 +2184,10 @@ Locales = {
             "agent": "特務",
             "rank": "牌階",
             "map": "地圖",
+            "in_game_details": "遊戲內詳情",
+            "score": "比分",
+            "kda": "K/D/A",
+            "phase": "回合階段",
         },
         "prints": {
             "config_modification": {
@@ -2118,6 +2276,13 @@ Locales = {
             "startup": {
                 "loading": "正在加載",
                 "view_github": "在Github上查看",
+            },
+            "round_phases": {
+                "attack": "進攻",
+                "defense": "防守",
+                "buy": "購買階段",
+                "intermission": "中場休息",
+                "in_game": "遊戲中",
             }
         },
     },
