@@ -48,6 +48,7 @@ class Loader:
                 "smash": "Swiftplay",
                 # Patch 13.00 (June 2026)
                 "retake": "Retake",
+                "fortcollins": "Retake",
                 "": "Custom",
             },
             "team_aliases": {

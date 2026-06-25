@@ -1,6 +1,55 @@
 from pypresence import Presence as PyPresence
 from pypresence.exceptions import InvalidPipe
 import time, sys, traceback, os, ctypes, asyncio, websockets, json, base64, ssl
+from InquirerPy.utils import color_print
+
+from ..utilities.gui import GUIState
+
+class _RpcWrapper:
+    """
+    Thin wrapper around a PyPresence instance.
+    Intercepts update() and transparently reconnects to Discord if the pipe
+    was closed (Discord restarted, crashed, etc.) before retrying once.
+    All other attribute access is forwarded to the real rpc object.
+    """
+    def __init__(self, rpc, client_id: str):
+        self._rpc       = rpc
+        self._client_id = client_id
+
+    def update(self, **kwargs):
+        try:
+            self._rpc.update(**kwargs)
+        except Exception:
+            self._reconnect()
+            try:
+                self._rpc.update(**kwargs)
+            except Exception:
+                pass   # next tick will retry
+
+    def _reconnect(self):
+        try:
+            self._rpc.close()
+        except Exception:
+            pass
+        for _ in range(5):
+            try:
+                rpc = PyPresence(client_id=self._client_id)
+                rpc.connect()
+                self._rpc = rpc
+                return
+            except Exception:
+                time.sleep(3)
+
+    def close(self):
+        try:
+            self._rpc.close()
+        except Exception:
+            pass
+
+    def __getattr__(self, name):
+        return getattr(self._rpc, name)
+
+
 
 ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
 ssl_context.check_hostname = False
@@ -21,15 +70,38 @@ class Presence:
         self.config = config
         self.client = None
         self.saved_locale = None
-        self.cached_account_level = None  # Cache pour le niveau du compte
-        try:
-            self.rpc = PyPresence(client_id=str(Localizer.get_config_value("client_id")))
-            self.rpc.connect()
-        except InvalidPipe as e:
-            raise Exception(e)
+        self.cached_account_level = None
+        self._client_id = str(Localizer.get_config_value("client_id"))
+        self.rpc = None
+        self._connect_rpc(startup=True)
         self.content_data = {}
     
-    def get_account_level(self, data=None):
+    def _connect_rpc(self, startup=False):
+        """
+        Connect to Discord RPC.
+        startup=True: retries up to 60 s waiting for Discord to open.
+        startup=False: single attempt used during reconnect.
+        """
+        max_wait = 60 if startup else 1
+        interval = 3
+        elapsed  = 0
+        while True:
+            try:
+                rpc = PyPresence(client_id=self._client_id)
+                rpc.connect()
+                # Wrap it so all callers get automatic reconnect on update()
+                self.rpc = _RpcWrapper(rpc, self._client_id)
+                return
+            except InvalidPipe:
+                if not startup or elapsed >= max_wait:
+                    raise Exception("Discord not detected")
+                color_print([("Cyan", f"[{elapsed}s] Waiting for Discord...")])
+                time.sleep(interval)
+                elapsed += interval
+            except Exception as e:
+                raise Exception(e)
+
+
         """
         Récupère le niveau du compte avec cache pour éviter les appels API répétés.
         """
@@ -135,7 +207,12 @@ class Presence:
                     else:
                         self.update_presence(session_state, presence_data)
             else:
-                os._exit(1)
+                # presence returned None — Valorant is between states or closing.
+                # Wait and retry instead of crashing.
+                GUIState.game_state = ""
+                GUIState.status = "Waiting for presence…"
+                time.sleep(2)
+                continue
 
             if Localizer.locale != self.saved_locale:
                 self.saved_locale = Localizer.locale
@@ -247,6 +324,9 @@ class Presence:
                 "INGAME": ingame,
             }
             
+            # Update shared GUI state
+            GUIState.game_state = ptype_upper if ptype_upper != "STARTUP" else ""
+
             # Handle "startup" as a special case (lowercase)
             if ptype_upper == "STARTUP" or ptype == "startup":
                 presence_types["STARTUP"].presence(self.rpc,client=self.client,data=data,content_data=self.content_data,config=self.config)
