@@ -46,6 +46,8 @@ class Loader:
                 "premier": "Premier",
                 "hurm_bo3": "TDM Best-of-3",
                 "smash": "Swiftplay",
+                # Patch 13.00 (June 2026)
+                "retake": "Retake",
                 "": "Custom",
             },
             "team_aliases": {
@@ -61,7 +63,7 @@ class Loader:
                 "Red": "team_defender",
                 "Blue": "team_attacker",
             },
-            "modes_with_icons": ["ggteam","onefa","snowball","spikerush","unrated","deathmatch","swiftplay","hurm","premier","skirmish","skirmish2v2","onesite","valaram","2v2","2v2skirmish","aros","allrandomonesite"]
+            "modes_with_icons": ["ggteam","onefa","snowball","spikerush","unrated","deathmatch","swiftplay","hurm","premier","retake","skirmish","skirmish2v2","onesite","valaram","2v2","2v2skirmish","aros","allrandomonesite"]
         }
         try:
             all_content = client.fetch_content() or {}

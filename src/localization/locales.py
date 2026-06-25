@@ -99,6 +99,7 @@ Locales = {
                 "premier": "Premier",
                 "hurm_bo3": "TDM Best-of-3",
                 "smash": "Swiftplay",
+                "retake": "Retake",
                 "": "Custom",
             },
             "replay": {
@@ -221,6 +222,7 @@ Locales = {
                 "premier": "بريمير",
                 "hurm_bo3": "ديثماتش الفريق - أفضل 3",
                 "smash": "سويفت بلاي",
+                "retake": "استعادة",
                 "": "خاص",
             },
             "pregame": {
@@ -336,6 +338,7 @@ Locales = {
                 "premier": "Premier",
                 "hurm_bo3": "Team-Deathmatch BO3",
                 "smash": "Schnelles Spiel",
+                "retake": "Retake",
                 "": "Custom",
             },
             "pregame": {
@@ -451,6 +454,7 @@ Locales = {
                 "premier": "Premier",
                 "hurm_bo3": "CDM Equipo BO3",
                 "smash": "Juego Rápido",
+                "retake": "Retake",
                 "": "Personalizada",
             },
             "pregame": {
@@ -566,6 +570,7 @@ Locales = {
                 "premier": "Premier",
                 "hurm_bo3": "Muerte por Equipos BO3",
                 "smash": "Partida Rápida",
+                "retake": "Retake",
                 "": "Personalizada",
             },
             "pregame": {
@@ -686,6 +691,7 @@ Locales = {
                 "premier": "Premier",
                 "hurm_bo3": "Match à mort équipe BO3",
                 "smash": "Jeu Rapide",
+                "retake": "Retake",
                 "": "Pesonalisée",
             },
             "replay": {
@@ -808,6 +814,7 @@ Locales = {
                 "premier": "Premier",
                 "hurm_bo3": "Deathmatch Tim BO3",
                 "smash": "Main Cepat",
+                "retake": "Retake",
                 "": "Custom",
             },
             "pregame": {
@@ -923,6 +930,7 @@ Locales = {
                 "premier": "Premier",
                 "hurm_bo3": "Deathmatch Squadre BO3",
                 "smash": "Gioco Rapido",
+                "retake": "Retake",
                 "": "Custom",
             },
             "pregame": {
@@ -1038,6 +1046,7 @@ Locales = {
                 "premier": "プレミア",
                 "hurm_bo3": "チームデスマッチBO3",
                 "smash": "スイフトプレイ",
+                "retake": "リテイク",
                 "": "カスタム",
             },
             "pregame": {
@@ -1153,6 +1162,7 @@ Locales = {
                 "premier": "프리미어",
                 "hurm_bo3": "팀 데스매치 BO3",
                 "smash": "스위프트플레이",
+                "retake": "리테이크",
                 "": "커스텀",
             },
             "pregame": {
@@ -1268,6 +1278,7 @@ Locales = {
                 "premier": "Premier",
                 "hurm_bo3": "Mata-Mata Equipe BO3",
                 "smash": "Frenético",
+                "retake": "Retake",
                 "": "Jogo Personalizado",
             },
             "pregame": {
@@ -1383,6 +1394,7 @@ Locales = {
                 "premier": "Премьер",
                 "hurm_bo3": "Командный бой BO3",
                 "smash": "Быстрая игра",
+                "retake": "Ретейк",
                 "": "Своя игра",
             },
             "pregame": {
@@ -1498,6 +1510,7 @@ Locales = {
                 "premier": "พรีเมียร์",
                 "hurm_bo3": "เดธแมตช์ทีม BO3",
                 "smash": "เล่นเร็ว",
+                "retake": "รีเทค",
                 "": "สร้างห้อง",
             },
             "pregame": {
@@ -1613,6 +1626,7 @@ Locales = {
                 "premier": "Premier",
                 "hurm_bo3": "Takımlı ÖKS BO3",
                 "smash": "Tam Gaz",
+                "retake": "Retake",
                 "": "Özel Maç",
             },
             "pregame": {
@@ -1728,6 +1742,7 @@ Locales = {
                 "premier": "Premier",
                 "hurm_bo3": "Tử chiến đồng đội BO3",
                 "smash": "Chơi Nhanh",
+                "retake": "Retake",
                 "": "Tuỳ chỉnh",
             },
             "pregame": {
@@ -1843,6 +1858,7 @@ Locales = {
                 "premier": "Premier",
                 "hurm_bo3": "Team Deathmatch BO3",
                 "smash": "Szybka Gra",
+                "retake": "Retake",
                 "": "Niestandardowy",
             },
             "pregame": {
@@ -1959,6 +1975,7 @@ Locales = {
                 "premier": "首席賽",
                 "hurm_bo3": "團隊死鬥 BO3",
                 "smash": "超速衝點",
+                "retake": "重奪",
                 "": "自定對戰",
             },
             "pregame": {
