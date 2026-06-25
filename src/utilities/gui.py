@@ -43,7 +43,37 @@ FONT_VALUE  = ("Segoe UI", 11, "bold")
 FONT_SMALL  = ("Segoe UI", 10)
 FONT_HEADER = ("Segoe UI", 10, "bold")
 
-WIN_W, WIN_H = 420, 560
+WIN_W, WIN_H = 420, 640
+
+# ── locale code → human-readable display name ────────────────────────────────
+LOCALE_NAMES = {
+    "en-US":  "English (US)",
+    "ar-AE":  "العربية",
+    "de-DE":  "Deutsch",
+    "es-ES":  "Español (España)",
+    "es-MX":  "Español (México)",
+    "fr-FR":  "Français",
+    "id-ID":  "Bahasa Indonesia",
+    "it-IT":  "Italiano",
+    "ja-JP":  "日本語",
+    "ko-KR":  "한국어",
+    "pt-BR":  "Português (Brasil)",
+    "ru-RU":  "Русский",
+    "th-TH":  "ไทย",
+    "tr-TR":  "Türkçe",
+    "vi-VN":  "Tiếng Việt",
+    "pl-PL":  "Polski",
+    "zh-CN":  "中文 (简体)",
+    "zh-TW":  "中文 (繁體)",
+    "fil-PH": "Filipino",
+    "sv-SE":  "Svenska",
+    "ms-MY":  "Bahasa Melayu",
+    "da-DK":  "Dansk",
+    "fi-FI":  "Suomi",
+    "cs-CZ":  "Čeština",
+    "hi-IN":  "हिन्दी",
+    "nl-NL":  "Nederlands",
+}
 
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -104,9 +134,10 @@ class MainWindow:
     def __init__(self, on_exit_callback):
         MainWindow._instance = self
         self._on_exit = on_exit_callback
-        self._visible = False
+        self._visible = True
         self._root    = None
         self._ready   = threading.Event()
+        self._close_notice_shown = False
 
         # StringVars — created after root exists
         self._sv = {}
@@ -143,12 +174,12 @@ class MainWindow:
 
     def _run(self):
         self._root = tk.Tk()
-        self._root.withdraw()
         self._root.title("valorant-rpc")
         self._root.geometry(f"{WIN_W}x{WIN_H}")
+        self._center_window()
         self._root.resizable(False, False)
         self._root.configure(bg=BG)
-        self._root.protocol("WM_DELETE_WINDOW", self._do_hide)
+        self._root.protocol("WM_DELETE_WINDOW", self._on_close_attempt)
 
         # Windows: remove from taskbar when hidden, use app icon
         self._root.wm_attributes("-topmost", False)
@@ -171,9 +202,59 @@ class MainWindow:
         # hide the old console window permanently now that we have a real GUI
         user32.ShowWindow(hWnd, 0)
 
+        # background worker does all the blocking network calls — the Tk
+        # main thread only ever reads the cache it fills in, so the GUI
+        # never freezes waiting on the Riot client API
+        self._fetch_cache = {"ready": False}
+        self._fetch_lock = threading.Lock()
+        threading.Thread(target=self._fetch_worker, daemon=True,
+                         name="gui-fetch-worker").start()
+
         # poll loop
         self._root.after(1000, self._poll)
         self._root.mainloop()
+
+    def _fetch_worker(self):
+        """Runs forever on its own thread, doing the blocking presence/rank/
+        map lookups, and stashing the results for the UI thread to read."""
+        while True:
+            cache = {"ready": True}
+            try:
+                pref = GUIState.presence_ref
+                if pref is None or pref.client is None:
+                    cache["no_client"] = True
+                else:
+                    try:
+                        data = pref.client.fetch_presence()
+                    except Exception:
+                        data = None
+                    cache["data"] = data
+
+                    if data is not None:
+                        content = getattr(pref, "content_data", {})
+                        cache["content"] = content
+
+                        map_name = None
+                        try:
+                            cg = pref.client.coregame_fetch_match()
+                            map_name = cg.get("MapID", "")
+                        except Exception:
+                            pass
+                        cache["map_id"] = map_name
+
+                        try:
+                            from .presence_utilities import Utilities  # type: ignore
+                            _, rank_text = Utilities.fetch_rank_data(pref.client, content)
+                            cache["rank_text"] = rank_text
+                        except Exception:
+                            cache["rank_text"] = None
+            except Exception:
+                pass
+
+            with self._fetch_lock:
+                self._fetch_cache = cache
+
+            time.sleep(1)
 
     def _build_ui(self):
         root = self._root
@@ -253,7 +334,6 @@ class MainWindow:
             b.bind("<Leave>",    lambda e: b.config(bg=bg_col))
             return b
 
-        _btn(btn_frame, "Reload", self._reload).pack(side="left", padx=(0, 6))
         _btn(btn_frame, "Exit", self._exit, danger=True).pack(side="right")
 
     def _build_settings(self, frame):
@@ -271,6 +351,15 @@ class MainWindow:
                  font=FONT_LABEL, anchor="w").pack(side="left", fill="x", expand=True)
 
         locale_codes = sorted(code for code, data in Locales.items() if data != {})
+        # display-name → code and code → display-name (fall back to the
+        # raw code itself for any locale not in our name map)
+        self._locale_code_to_name = {
+            code: LOCALE_NAMES.get(code, code) for code in locale_codes
+        }
+        self._locale_name_to_code = {
+            name: code for code, name in self._locale_code_to_name.items()
+        }
+        display_names = sorted(self._locale_code_to_name.values())
 
         style = ttk.Style()
         style.theme_use("default")
@@ -283,10 +372,10 @@ class MainWindow:
                   fieldbackground=[("readonly", SURFACE2)],
                   foreground=[("readonly", TEXT)])
 
-        self._locale_var = tk.StringVar(value="en-US")
+        self._locale_var = tk.StringVar(value=self._locale_code_to_name["en-US"])
         locale_box = ttk.Combobox(locale_row, textvariable=self._locale_var,
-                                  values=locale_codes, state="readonly",
-                                  style="Locale.TCombobox", width=10,
+                                  values=display_names, state="readonly",
+                                  style="Locale.TCombobox", width=18,
                                   font=FONT_LABEL)
         locale_box.pack(side="right")
         locale_box.bind("<<ComboboxSelected>>", self._on_locale_change)
@@ -359,12 +448,17 @@ class MainWindow:
                 self._sv[key].set("—")
             return
 
-        # Try to get live presence
-        try:
-            data = pref.client.fetch_presence()
-        except Exception:
-            data = None
+        with self._fetch_lock:
+            cache = self._fetch_cache
 
+        if not cache.get("ready") or cache.get("no_client"):
+            self._sv["status"].set("Waiting for Valorant…")
+            self._dot.set_active(False)
+            for key in ("game_state", "agent", "map", "mode", "rank", "party"):
+                self._sv[key].set("—")
+            return
+
+        data = cache.get("data")
         if data is None:
             self._sv["status"].set("Presence unavailable")
             self._dot.set_active(False)
@@ -378,7 +472,7 @@ class MainWindow:
         self._sv["game_state"].set(gs.title() if gs else "—")
 
         # agent
-        content = getattr(pref, "content_data", {})
+        content = cache.get("content", {})
         agent_id = data.get("characterId", "")
         agent_name = "—"
         for a in content.get("agents", []):
@@ -389,15 +483,11 @@ class MainWindow:
 
         # map (from coregame if available, else presence)
         map_name = "—"
-        try:
-            cg = pref.client.coregame_fetch_match()
-            map_id = cg.get("MapID", "")
-            for m in content.get("maps", []):
-                if m.get("mapUrl", "").lower() == map_id.lower():
-                    map_name = m.get("displayName", "—")
-                    break
-        except Exception:
-            pass
+        map_id = cache.get("map_id") or ""
+        for m in content.get("maps", []):
+            if m.get("mapUrl", "").lower() == map_id.lower():
+                map_name = m.get("displayName", "—")
+                break
         self._sv["map"].set(map_name)
 
         # mode
@@ -406,12 +496,7 @@ class MainWindow:
         self._sv["mode"].set(modes.get(queue_id, queue_id or "—"))
 
         # rank
-        try:
-            from .presence_utilities import Utilities  # type: ignore
-            _, rank_text = Utilities.fetch_rank_data(pref.client, content)
-            self._sv["rank"].set(rank_text or "—")
-        except Exception:
-            self._sv["rank"].set("—")
+        self._sv["rank"].set(cache.get("rank_text") or "—")
 
         # party
         party_state, party_size = self._build_party(data)
@@ -442,9 +527,10 @@ class MainWindow:
         from ..localization.localization import Localizer
 
         try:
-            locale = cfg.get("locale", [None, None])[0]
-            if locale and self._locale_var.get() != locale:
-                self._locale_var.set(locale)
+            code = cfg.get("locale", [None, None])[0]
+            name = self._locale_code_to_name.get(code, code)
+            if name and self._locale_var.get() != name:
+                self._locale_var.set(name)
         except Exception:
             pass
 
@@ -473,13 +559,25 @@ class MainWindow:
         if cfg is None:
             return
         from ..localization.localization import Localizer
-        new_locale = self._locale_var.get()
-        if "locale" in cfg and isinstance(cfg["locale"], list):
-            cfg["locale"][0] = new_locale
-        else:
-            cfg["locale"] = new_locale
+        from .config.app_config import Config
+
+        selected_name = self._locale_var.get()
+        new_locale = self._locale_name_to_code.get(selected_name, selected_name)
+
+        # Config keys (e.g. "presences", "presence_refresh_interval") are
+        # stored translated to the *current* locale's words. To switch
+        # locales we must: unlocalize keys back to canonical English,
+        # swap the active locale, then relocalize keys to the new locale.
+        # Skipping this leaves stale (old-locale) key names that the new
+        # locale's Localizer.get_config_key() can't find → KeyError.
+        cfg = Config.localize_config(cfg, unlocalize=True)
+        cfg["locale"][0] = new_locale
         Localizer.locale = new_locale
-        self._write_config(("locale",), cfg["locale"])
+        cfg = Config.localize_config(cfg, unlocalize=False)
+
+        Localizer.config = cfg
+        GUIState.config  = cfg
+        Config.modify_config(cfg)
 
     def _on_toggle(self, label):
         cfg = GUIState.config
@@ -521,6 +619,14 @@ class MainWindow:
 
     # ── window management ─────────────────────────────────────────────────────
 
+    def _center_window(self):
+        self._root.update_idletasks()
+        sw = self._root.winfo_screenwidth()
+        sh = self._root.winfo_screenheight()
+        x = (sw - WIN_W) // 2
+        y = (sh - WIN_H) // 2
+        self._root.geometry(f"{WIN_W}x{WIN_H}+{x}+{y}")
+
     def _do_show(self):
         self._visible = True
         self._root.deiconify()
@@ -531,10 +637,47 @@ class MainWindow:
         self._visible = False
         self._root.withdraw()
 
-    def _reload(self):
-        import subprocess
-        self._root.after(200, lambda: os.execl(
-            sys.executable, os.path.abspath(sys.executable), *sys.argv))
+    def _on_close_attempt(self):
+        """Clicking the X minimizes (hides) the window instead of quitting —
+        show a one-time-per-launch toast explaining that, then hide."""
+        if not self._close_notice_shown:
+            self._close_notice_shown = True
+            self._show_toast(
+                "The app will keep running in the background.\n"
+                "Press Exit if you want to close it for good.")
+        self._do_hide()
+
+    def _show_toast(self, message, duration_ms=4000):
+        """Small borderless notification that appears in the bottom-right
+        corner above the taskbar and disappears on its own."""
+        try:
+            toast = tk.Toplevel(self._root)
+            toast.overrideredirect(True)
+            toast.attributes("-topmost", True)
+            toast.configure(bg=SURFACE2)
+
+            frame = tk.Frame(toast, bg=SURFACE2,
+                             highlightbackground=ACCENT, highlightthickness=1)
+            frame.pack(fill="both", expand=True)
+
+            tk.Label(frame, text="valorant-rpc", fg=ACCENT, bg=SURFACE2,
+                     font=FONT_HEADER, anchor="w").pack(
+                fill="x", padx=12, pady=(10, 2))
+            tk.Label(frame, text=message, fg=TEXT, bg=SURFACE2,
+                     font=FONT_LABEL, justify="left", anchor="w",
+                     wraplength=260).pack(fill="x", padx=12, pady=(0, 10))
+
+            toast.update_idletasks()
+            w, h = toast.winfo_width(), toast.winfo_height()
+            sw = toast.winfo_screenwidth()
+            sh = toast.winfo_screenheight()
+            x = sw - w - 16
+            y = sh - h - 60   # clear the taskbar
+            toast.geometry(f"{w}x{h}+{x}+{y}")
+
+            toast.after(duration_ms, toast.destroy)
+        except Exception:
+            pass
 
     def _exit(self):
         self._on_exit()

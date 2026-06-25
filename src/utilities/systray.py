@@ -31,7 +31,6 @@ class Systray:
 
         systray_menu = menu(
             item('Show / Hide', self._toggle,  default=True),
-            item('Reload',      Systray.restart),
             item('Exit',        self.exit),
         )
         self.systray = icon("valorant-rpc", systray_image,
@@ -71,4 +70,16 @@ class Systray:
 
     @staticmethod
     def restart(_icon=None, _item=None):
-        os.execl(sys.executable, os.path.abspath(sys.executable), *sys.argv)
+        import subprocess
+        try:
+            if getattr(sys, "frozen", False):
+                args = [sys.executable] + sys.argv[1:]
+            else:
+                args = [sys.executable] + sys.argv
+            subprocess.Popen(args, close_fds=True)
+        except Exception:
+            pass
+        # os.execl() doesn't reliably hand off on Windows once the systray/
+        # tkinter threads are alive — spawn a fresh process instead, then
+        # terminate this one outright.
+        os._exit(0)

@@ -37,9 +37,10 @@ class Startup:
             self.config = Config.fetch_config()
             if "locale" in self.config.keys():
                 if self.config["locale"][0] == "":
-                    config = Localizer.prompt_locale(self.config)
-                    Config.modify_config(config)
-                    Systray.restart()
+                    # default silently to en-US — locale can be changed any
+                    # time from the GUI's Quick Settings, no console needed
+                    self.config["locale"][0] = "en-US"
+                    Config.modify_config(self.config)
 
             self.installs = Program_Data.fetch_installs()
             Localizer.set_locale(self.config)
