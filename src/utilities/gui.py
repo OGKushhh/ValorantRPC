@@ -37,13 +37,13 @@ TEXT_DIM    = "#6e6e8a"
 GREEN       = "#4caf50"
 YELLOW      = "#ffc107"
 
-FONT_TITLE  = ("Segoe UI", 11, "bold")
-FONT_LABEL  = ("Segoe UI", 9)
-FONT_VALUE  = ("Segoe UI", 9, "bold")
-FONT_SMALL  = ("Segoe UI", 8)
-FONT_HEADER = ("Segoe UI", 8, "bold")
+FONT_TITLE  = ("Segoe UI", 13, "bold")
+FONT_LABEL  = ("Segoe UI", 11)
+FONT_VALUE  = ("Segoe UI", 11, "bold")
+FONT_SMALL  = ("Segoe UI", 10)
+FONT_HEADER = ("Segoe UI", 10, "bold")
 
-WIN_W, WIN_H = 380, 480
+WIN_W, WIN_H = 420, 560
 
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -183,9 +183,9 @@ class MainWindow:
         title_frame.pack(fill="x", padx=16, pady=(14, 6))
 
         tk.Label(title_frame, text="VALORANT", fg=ACCENT,
-                 bg=BG, font=("Segoe UI", 13, "bold")).pack(side="left")
+                 bg=BG, font=("Segoe UI", 16, "bold")).pack(side="left")
         tk.Label(title_frame, text=" RPC", fg=TEXT,
-                 bg=BG, font=("Segoe UI", 13, "bold")).pack(side="left")
+                 bg=BG, font=("Segoe UI", 16, "bold")).pack(side="left")
 
         ver_lbl = tk.Label(title_frame, textvariable=self._sv["version"],
                            fg=TEXT_DIM, bg=BG, font=FONT_SMALL)
@@ -247,7 +247,7 @@ class MainWindow:
             bg_col = ACCENT if danger else SURFACE2
             hv_col = ACCENT_DIM if danger else "#2a2a3a"
             b = tk.Label(parent, text=text, fg=fg_col, bg=bg_col,
-                         font=FONT_LABEL, padx=12, pady=6, cursor="hand2")
+                         font=("Segoe UI", 11), padx=18, pady=10, cursor="hand2")
             b.bind("<Button-1>", lambda e: cmd())
             b.bind("<Enter>",    lambda e: b.config(bg=hv_col))
             b.bind("<Leave>",    lambda e: b.config(bg=bg_col))
@@ -261,6 +261,36 @@ class MainWindow:
         Render toggleable boolean settings from the live config.
         We expose the most useful ones without opening a console.
         """
+        # ── locale selector ──────────────────────────────────────────────────
+        from ..localization.locales import Locales
+
+        locale_row = tk.Frame(frame, bg=SURFACE)
+        locale_row.pack(fill="x", padx=12, pady=(8, 3))
+
+        tk.Label(locale_row, text="Locale", fg=TEXT, bg=SURFACE,
+                 font=FONT_LABEL, anchor="w").pack(side="left", fill="x", expand=True)
+
+        locale_codes = sorted(code for code, data in Locales.items() if data != {})
+
+        style = ttk.Style()
+        style.theme_use("default")
+        style.configure("Locale.TCombobox",
+                         fieldbackground=SURFACE2, background=SURFACE2,
+                         foreground=TEXT, arrowcolor=TEXT,
+                         bordercolor=SURFACE2, lightcolor=SURFACE2,
+                         darkcolor=SURFACE2, relief="flat")
+        style.map("Locale.TCombobox",
+                  fieldbackground=[("readonly", SURFACE2)],
+                  foreground=[("readonly", TEXT)])
+
+        self._locale_var = tk.StringVar(value="en-US")
+        locale_box = ttk.Combobox(locale_row, textvariable=self._locale_var,
+                                  values=locale_codes, state="readonly",
+                                  style="Locale.TCombobox", width=10,
+                                  font=FONT_LABEL)
+        locale_box.pack(side="right")
+        locale_box.bind("<<ComboboxSelected>>", self._on_locale_change)
+
         TOGGLES = [
             # (display label,  config path as tuple of keys)
             ("Show rank in comp lobby",   ("presences", "menu", "show_rank_in_comp_lobby")),
@@ -411,6 +441,13 @@ class MainWindow:
             return
         from ..localization.localization import Localizer
 
+        try:
+            locale = cfg.get("locale", [None, None])[0]
+            if locale and self._locale_var.get() != locale:
+                self._locale_var.set(locale)
+        except Exception:
+            pass
+
         for label, (var, path) in self._setting_vars.items():
             try:
                 val = cfg
@@ -430,6 +467,19 @@ class MainWindow:
             pass
 
     # ── settings callbacks ────────────────────────────────────────────────────
+
+    def _on_locale_change(self, _event=None):
+        cfg = GUIState.config
+        if cfg is None:
+            return
+        from ..localization.localization import Localizer
+        new_locale = self._locale_var.get()
+        if "locale" in cfg and isinstance(cfg["locale"], list):
+            cfg["locale"][0] = new_locale
+        else:
+            cfg["locale"] = new_locale
+        Localizer.locale = new_locale
+        self._write_config(("locale",), cfg["locale"])
 
     def _on_toggle(self, label):
         cfg = GUIState.config
@@ -495,7 +545,7 @@ class MainWindow:
 # ─────────────────────────────────────────────────────────────────────────────
 
 class _Toggle(tk.Canvas):
-    W, H = 36, 18
+    W, H = 44, 22
     PAD  = 2
 
     def __init__(self, parent, variable: tk.BooleanVar, command=None, **kw):
