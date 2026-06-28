@@ -6,6 +6,10 @@ on:
       version:
         description: "Version tag for this release (e.g. v1.2.0)"
         required: true
+      dry_run:
+        description: "Dry run — build & scan only, no tag or release"
+        type: boolean
+        default: false
 
 jobs:
   build:
@@ -43,6 +47,7 @@ jobs:
           path: dist/valorant-rpc.exe
 
       - name: Create GitHub Release
+        if: ${{ github.event.inputs.dry_run != 'true' }}
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.inputs.version }}
@@ -55,7 +60,7 @@ jobs:
         uses: crazy-max/ghaction-virustotal@v5
         with:
           vt_api_key: ${{ secrets.VT_API_KEY }}
-          update_release_body: true
+          update_release_body: ${{ github.event.inputs.dry_run != 'true' }}
           files: |
             .exe$
         env:
