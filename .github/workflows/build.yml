@@ -46,22 +46,22 @@ jobs:
           name: valorant-rpc
           path: dist/valorant-rpc.exe
 
+      - name: VirusTotal Scan
+        id: virustotal
+        uses: crazy-max/ghaction-virustotal@v5
+        with:
+          vt_api_key: ${{ secrets.VT_API_KEY }}
+          files: |
+            dist/valorant-rpc.exe
+
       - name: Create GitHub Release
         if: ${{ github.event.inputs.dry_run != 'true' }}
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.inputs.version }}
           name: ${{ github.event.inputs.version }}
+          body: |
+            **VirusTotal scan:** ${{ steps.virustotal.outputs.analysis }}
           files: dist/valorant-rpc.exe
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: VirusTotal Scan
-        uses: crazy-max/ghaction-virustotal@v5
-        with:
-          vt_api_key: ${{ secrets.VT_API_KEY }}
-          update_release_body: ${{ github.event.inputs.dry_run != 'true' }}
-          files: |
-            .exe$
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
