@@ -67,6 +67,8 @@ This is a community fork of [colinhartigan/valorant-rpc](https://github.com/coli
 1. Download the latest release from the [Releases](https://github.com/OGKushhh/ValorantRPC/releases) page.
 2. Run it.
 
+> ⚠️ **Antivirus flag?** Some AV engines may flag the exe as a false positive due to UPX compression — this is a well-documented pattern with PyInstaller-built executables in general, not a sign of anything malicious. Every release is scanned with [VirusTotal](https://www.virustotal.com/) and the results are linked in the release notes if you want to check for yourself.
+
 ---
 
 ## 🕹️ Usage

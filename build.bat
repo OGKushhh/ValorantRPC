@@ -31,6 +31,6 @@ CD /D "%~dp0"
 
 "C:\Users\abdo\AppData\Local\Programs\Python\Python312\python.exe" -m pip install -r requirements.txt
 "C:\Users\abdo\AppData\Local\Programs\Python\Python312\python.exe" -m pip install -r requirements.txt --upgrade
-"C:\Users\abdo\AppData\Local\Programs\Python\Python312\python.exe" -m PyInstaller main.py --name="valorant-rpc" --icon=favicon.ico --hidden-import "pystray._win32" --onefile --version-file "version.py"
+"C:\Users\abdo\AppData\Local\Programs\Python\Python312\python.exe" -m PyInstaller valorant-rpc.spec --upx-dir "tools\upx"
 
 pause
